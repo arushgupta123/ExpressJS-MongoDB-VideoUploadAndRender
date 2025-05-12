@@ -26,8 +26,6 @@ app.use(fileUpload({
 
 const client = new MongoClient(URI)
 
-//const valiDB = client.db("datab1")
-
 async function createBucket() {
     await client.connect()
     const db = client.db("sample_vid") //Database name
