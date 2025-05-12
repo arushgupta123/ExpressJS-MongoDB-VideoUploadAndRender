@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Files</title>
+    <style>
+        table, th, td {
+            border: 2px solid black;
+            border-collapse: collapse;
+        }
+        input {
+            width: 100%;
+        }
+        
+    </style>
+</head>
+<body>
+    <h1>View Your Files</h1>
+    <br><br>
+    <input type="text" name="" id="search" oninput="search()" placeholder="Search for video">
+    <table style="width: 100%;">
+        <tr>
+            <th>Sl</th>
+            <th>File</th>
+            <th>Download</th>
+            <th>View</th>
+            <th>Delete</th>
+        </tr>
+        <% var x = 0 %>
+        
+        <% files.forEach(file => { %>
+            <% x = x + 1 %>
+            <tr>
+                <td><%= x %></td>
+                <td class="names"><%= file.filename %> </td>
+                <td><a href="/download/<%= file._id %>">Download</a></td>
+                <td><% if (file.metadata && file.metadata.contentType && file.metadata.contentType.startsWith('video/')) { %>
+                    <video width="320" height="240" controls>
+                        <source src="/video/<%= file._id %>" type="<%= file.metadata.contentType %>">
+                        Your browser does not support the video tag.
+                    </video></td>
+                <% } %>
+                <td><button><a href="#" onclick="del('<%= file._id %>'); return false;">Delete</a></button></td>
+                </tr>
+        <% }); %>
+    </table>
+    <script>
+        function search() {
+    let desiredChar = document.getElementById("search").value.toLowerCase(); // Convert input to lowercase for case-insensitive search
+    const rows = document.querySelectorAll('table tr'); // Select all table rows
+
+    // Start iterating from the second row (index 1) to skip the table header
+    for (let i = 1; i < rows.length; i++) {
+        const nameTd = rows[i].querySelector('td.names'); // Find the <td> with the filename
+
+        if (nameTd) {
+            const filenam = nameTd.textContent.toLowerCase(); // Convert filename to lowercase for case-insensitive search
+            if (filenam.includes(desiredChar)) {
+                rows[i].style.display = ""; // Show the row
+            } else {
+                rows[i].style.display = "none"; // Hide the row
+            }
+        }
+    }
+}
+
+    function del(fid) {
+        window.location.href = `/delete/${fid}`
+    }
+    </script>
+    <!--</ul>-->
+</body>
+</html>
